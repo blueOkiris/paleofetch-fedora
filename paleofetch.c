@@ -150,8 +150,8 @@ static char *get_bar() {
 
 static char *get_os() {
     char *os = malloc(BUF_SIZE),
-         *name = malloc(BUF_SIZE),
-         *line = NULL;
+            *name = malloc(BUF_SIZE),
+            *line = NULL;
     size_t len;
     FILE *os_release = fopen("/etc/os-release", "r");
     if(os_release == NULL) {
@@ -160,7 +160,7 @@ static char *get_os() {
     }
 
     while (getline(&line, &len, os_release) != -1) {
-        if (sscanf(line, "NAME=\"%[^\"]+", name) > 0) break;
+        if (sscanf(line, "PRETTY_NAME=\"%[^\"]+", name) > 0) break;
     }
 
     free(line);
@@ -261,35 +261,6 @@ static char *get_battery_percentage() {
   snprintf(battery, 20, "%d%% [%s]", battery_capacity, battery_status);
 
   return battery;
-}
-
-static char *get_packages(const char* dirname, const char* pacname, int num_extraneous) {
-    int num_packages = 0;
-    DIR * dirp;
-    struct dirent *entry;
-
-    dirp = opendir(dirname);
-
-    if(dirp == NULL) {
-        status = -1;
-        halt_and_catch_fire("You may not have %s installed", dirname);
-    }
-
-    while((entry = readdir(dirp)) != NULL) {
-        if(entry->d_type == DT_DIR) num_packages++;
-    }
-    num_packages -= (2 + num_extraneous); // accounting for . and ..
-
-    status = closedir(dirp);
-
-    char *packages = malloc(BUF_SIZE);
-    snprintf(packages, BUF_SIZE, "%d (%s)", num_packages, pacname);
-
-    return packages;
-}
-
-static char *get_packages_pacman() {
-    return get_packages("/var/lib/pacman/local", "pacman", 0);
 }
 
 static char *get_shell() {
@@ -717,7 +688,7 @@ int main(int argc, char *argv[]) {
     for (int i = 0; i < COUNT(LOGO); i++) {
         // If we've run out of information to show...
         if(i >= COUNT(config) - offset) // just print the next line of the logo
-            printf(COLOR"%s\n", LOGO[i]);
+            printf("%s\n", LOGO[i]);
         else {
             // Otherwise, we've got a bit of work to do.
             char *label = config[i+offset].label,
