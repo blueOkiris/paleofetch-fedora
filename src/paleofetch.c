@@ -16,8 +16,8 @@
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 
-#include "paleofetch.h"
-#include "config.h"
+#include <paleofetch.h>
+#include <config.h>
 
 #define BUF_SIZE 150
 #define COUNT(x) (int)(sizeof x / sizeof *x)
