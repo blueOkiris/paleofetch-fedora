@@ -1,3 +1,5 @@
+#pragma once
+
 #define BLU   "\x1B[34m"
 #define WHT   "\x1B[37m"
 
