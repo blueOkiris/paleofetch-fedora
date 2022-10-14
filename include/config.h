@@ -1,4 +1,7 @@
-#include "logos/fedora.h"
+#pragma once
+
+#include <logos/fedora.h>
+
 #define COLOR "\e[1;36m"
 
 #define CONFIG \
