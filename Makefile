@@ -1,17 +1,47 @@
-CFLAGS=-O2 -Wall -Wextra -lX11 -lpci
-PREFIX=$(HOME)/.local
-CACHE=$(shell if [ "$$XDG_CACHE_HOME" ]; then echo "$$XDG_CACHE_HOME"; else echo "$$HOME"/.cache; fi)
+# Settings
 
-all: paleofetch
+## Compiler settings
+
+CC :=		gcc
+CFLAGS :=	-O2 -Wall -Wextra \
+			-I include
+LD :=		gcc
+LDFLAGS :=	-lX11 -lpci
+
+## Install settings
+
+PREFIX :=	$(HOME)/.local
+CACHE :=	$(shell if [ "$$XDG_CACHE_HOME" ]; then echo "$$XDG_CACHE_HOME"; else echo "$$HOME"/.cache; fi)
+
+## Project settings
+
+OBJNAME :=	paleofetch
+SRC :=		$(wildcard src/*.c)
+HFILES :=	$(wildcard include/*.h)
+OBJS :=		$(subst src/,obj/,$(subst .c,.o,$(SRC)))
+
+# Targets
+
+## Helper targets
+
+.PHONY: all
+all: $(OBJNAME)
 
 clean:
-	rm -f paleofetch $(CACHE)/paleofetch
+	rm -rf $(OBJNAME) $(CACHE)/$(OBJNAME) obj/
 
-paleofetch: paleofetch.c paleofetch.h config.h
-	$(eval battery_path := $(shell ./config_scripts/battery_config.sh))
-	$(CC) paleofetch.c -o paleofetch $(CFLAGS) -D $(battery_path)
-	strip paleofetch
-
-install: paleofetch
+install: $(OBJNAME)
 	mkdir -p $(PREFIX)/bin
-	install ./paleofetch $(PREFIX)/bin/paleofetch
+	install ./$(OBJNAME) $(PREFIX)/bin/$(OBJNAME)
+
+obj/%.o: src/%.c $(HFILES)
+	mkdir -p obj/
+	$(eval battery_path := $(shell ./config_scripts/battery_config.sh))
+	$(CC) -o $@ $(CFLAGS) -c $< -D $(battery_path)
+
+## Main target(s)
+
+$(OBJNAME): $(OBJS)
+	$(LD) -o $@ $^ $(LDFLAGS)
+	strip $@
+
