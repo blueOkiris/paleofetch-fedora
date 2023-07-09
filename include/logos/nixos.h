@@ -4,10 +4,10 @@
 #define CYAN    "\x1B[36m"
 
 char *LOGO[] = {
-    BLUE"          ▗▄▄▄       "CYAN"▗▄▄▄▄    ▄▄▄▖            ",
-    BLUE"          ▜███▙       "CYAN"▜███▙  ▟███▛            ",
-    BLUE"           ▜███▙       "CYAN"▜███▙▟███▛             ",
-    BLUE"            ▜███▙       "CYAN"▜██████▛              ",
+    BLUE"          ▗▄▄▄       "CYAN"▗▄▄▄▄    ▄▄▄▖            "BLUE,
+    BLUE"          ▜███▙       "CYAN"▜███▙  ▟███▛            "BLUE,
+    BLUE"           ▜███▙       "CYAN"▜███▙▟███▛             "BLUE,
+    BLUE"            ▜███▙       "CYAN"▜██████▛              "BLUE,
     BLUE"     ▟█████████████████▙ "CYAN"▜████▛     "BLUE"▟▙        ",
     BLUE"    ▟███████████████████▙ "CYAN"▜███▙    "BLUE"▟██▙       ",
     CYAN"           ▄▄▄▄▖           ▜███▙  "BLUE"▟███▛       ",
@@ -18,11 +18,11 @@ char *LOGO[] = {
     CYAN"      ▟███▛ "BLUE"▟▙               ▟███▛            ",
     CYAN"     ▟███▛ "BLUE"▟██▙             ▟███▛             ",
     CYAN"    ▟███▛  "BLUE"▜███▙           ▝▀▀▀▀              ",
-    CYAN"    ▜██▛    "BLUE"▜███▙ "CYAN"▜██████████████████▛        ",
-    CYAN"     ▜▛     "BLUE"▟████▙ "CYAN"▜████████████████▛         ",
-    BLUE"           ▟██████▙       "CYAN"▜███▙               ",
-    BLUE"          ▟███▛▜███▙       "CYAN"▜███▙              ",
-    BLUE"         ▟███▛  ▜███▙       "CYAN"▜███▙             ",
-    BLUE"         ▝▀▀▀    ▀▀▀▀▘       "CYAN"▀▀▀▘             "
+    CYAN"    ▜██▛    "BLUE"▜███▙ "CYAN"▜██████████████████▛        "BLUE,
+    CYAN"     ▜▛     "BLUE"▟████▙ "CYAN"▜████████████████▛         "BLUE,
+    BLUE"           ▟██████▙       "CYAN"▜███▙               "BLUE,
+    BLUE"          ▟███▛▜███▙       "CYAN"▜███▙              "BLUE,
+    BLUE"         ▟███▛  ▜███▙       "CYAN"▜███▙             "BLUE,
+    BLUE"         ▝▀▀▀    ▀▀▀▀▘       "CYAN"▀▀▀▘             "BLUE
 };
 
