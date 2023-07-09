@@ -16,7 +16,7 @@ CACHE :=	$(shell if [ "$$XDG_CACHE_HOME" ]; then echo "$$XDG_CACHE_HOME"; else e
 
 OBJNAME :=	paleofetch
 SRC :=		$(wildcard src/*.c)
-HFILES :=	$(wildcard include/*.h)
+HFILES :=	$(wildcard include/*.h) $(wildcard include/logos/*.h)
 OBJS :=		$(subst src/,obj/,$(subst .c,.o,$(SRC)))
 
 # Targets
