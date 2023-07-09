@@ -1,6 +1,8 @@
 #pragma once
 
-#include <logos/fedora.h>
+// Uncomment for your OS
+//#include <logos/fedora.h>
+#include <logos/nixos.h>
 
 #define COLOR "\e[1;36m"
 
