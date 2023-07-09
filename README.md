@@ -1,107 +1,83 @@
-paleofetch-fedora
-==========
+# Paleofetch for NixOS
 
-Fork of paleofetch (added fedora logo), a rewrite of [neofetch](https://github.com/dylanaraps/neofetch) in C.
+## Description
+
+Fork of [paleofetch-fedora](https://github.com/maciejlagowski/paleofetch-fedora) (which itself is a fork of [paleofetch](https://github.com/ss7m/paleofetch) that adds the fedora logo) adjusted to show the NixOS logo. The original paleofetch was itself a rewrite of [neofetch](https://github.com/dylanaraps/neofetch) in C.
+
 Currently only supports Linux and Xorg.
 
+So what the heck is it? It shows info like this:
 
-Why use paleofetch over neofetch?
------------------------------------------
+![example output](example.png)
+
+But does it faster than neofetch, so you can safely put it at the end of you bashrc/zshrc
+
+## Why use paleofetch over neofetch?
+
 One major reason is the performance improvement. For example: neofetch finishes running after about 222 milliseconds where as paleofetch can finish running in a blazing fast 3 milliseconds.
 
 Note: this testing occured on only 1 computer, it's not a good representation on the performance benefit you may gain.
 
 
-Example output:
+## Compiling
 
-![example output](example.png)
-
-Dependencies
-------------
+### Dependencies
 
 Paleofetch requires `libX11` and `libpci`. If you're running Xorg you should already have
 the former. On Arch Linux, you should have `libpci` already installed if you have `pciutils`
 installed. On other linux distrobutions, you may need to install libpci seperatley
 if its not already present.
 
-Compiling
----------
+On NixOS, to build, you'll need a separate nix-shell with `pciutils` and `xorg.libX11`, but I'm assuming your system already has `make` and `gcc` at the top-level.
 
-    make install
+### Manual
 
-Usage
------
+```
+nix-shell -p pciutils xorg.libX11
+make
+```
 
-After compiling, simply run the executable:
+### Configuration
 
-    paleofetch
+In your configuration.nix, add the following to the top just after the `{ config, pkgs, ... }` but before the next `{`:
+
+```
+{ config, pkgs, ... }:
+
+let
+    paleofetch = pkgs.stdenv.mkDerivation rec {
+        name = "paleofetch";
+        src = pkgs.fetchFromGitHub {
+            owner = "blueOkiris";
+            repo = "paleofetch-nixos";
+            rev = "<latest github commit>";
+            sha256 = "<result of 'nix-prefetch-url --unpack https://github.com/blueOkiris/paleofetch-nixos/archive/that-github-commit-from-above.tar.gz'>";
+        };
+        buildInputs = [ pkgs.gcc pkgs.gnumake pkgs.pciutils pkgs.xorg.libX11 ];
+        buildPhase = ''
+            mkdir -p $out
+            cp -ra $src/* $out
+            cd $out
+            make
+            rm -rf obj/
+        '';
+        installPhase = ''
+            mkdir -p $out/bin
+            cp $out/paleofetch $out/bin
+        '';
+    };
+in {
+    ...
+}
+```
+
+## Usage
+
+After compiling, simply run the executable: `./paleofetch`, or just `paleofetch` if installed on the system.
 
 By default, `paleofetch` will cache certain  information (in `$XDG_CACHE_HOME/paleofetch`)
-to speed up subsequent calls. To ignore the contents of the cache (and repopulate it), run
-
-    paleofetch --recache
+to speed up subsequent calls. To ignore the contents of the cache (and repopulate it), run `paleofetch --recache`
 
 The cache file can safely be removed at any time, paleofetch will repopulate it
 if it is absent.
 
-Configuration
--------------
-
-Paleofetch is configured by editing `config.h` and recompiling.
-You can change your logo by including the appropriate header file in the logos directory.
-The color with which paleo fetch draws the logo can be chosen by defining the `COLOR` macro,
-look up ANSI escape codes for information on customizing this.
-
-The last configuration is the `CONFIG` macro, which controls what information paleofetch
-prints. Each entry in this macro should look like
-
-    { "NAME: ",   getter_function, false }, \
-    
-Take note of the trailing comma and backslash. The first piece, `"NAME: "`, sets
-what paleofetch prints before printing the information; this usually tells you what
-bit of information is being shown. Note that the name entry should be unique for entries
-which are to be cached. The second piece, `getter_function`, sets
-which function paleofetch will call display. Current available getter functions are
-
-* `get_title`: prints `host@user` like in a bash prompt. Host and user will be printed in color.
-* `get_bar`: Meant to be added after `get_title`, underlines the title
-* `get_os`: Prints your operating system (including distrobution)
-* `get_host`: Prints the model of computer
-* `get_kernel`: Prints the version of the linux kernel
-* `get_uptime`: Shows how long linux has been running
-* `get_packages`: Shows how many packages you have installed. Currently only works for pacman.
-* `get_shell`: Shows which shell you are using
-* `get_resolution`: Prints your screen resolution
-* `get_terminal`: Prints the name of your current terminal
-* `get_cpu`: Prints the name of your CPU, number of cores, and maximum frequency
-* `get_gpu1`, `get_gpu2`: Print the GPU on your system. If you don't have both integrated graphics and an external GPU, `get_gpu2` will likely be blank
-* `get_gpu`: (Tries to) print your current GPU
-* `get_colors1`, `get_colors2`: Prints the colors of your terminal
-
-To include a blank line between entries, put `SPACER \` between the two lines
-you want to separate.
-
-The booleans in `CONFIG` tell paleofetch whether you want to cache an entry.
-When cached, paleofetch will save the value and not recompute it whenever you run paleofetch
-(unless you specify the `--recache` option).
-
-The CPU and GPU name can be configured as well. This is done under the CPU_CONFIG and GPU_CONFIG section
-in the config.h file. Two macros are provided to customize and tidy up the model names:
-
-* `REMOVE(string)`: removes the first occurence of `string`
-* `REPLACE(string1, string2)`: replaces the first occurence of `string1` with `string2`
-
-Don't forget to run paleofetch with the --recache flag after compiling it with your new
-configuration, otherwise it will still show the old name for already cached entries.
-
-FAQ
----
-
-Q: Do you really run neofetch every time you open a terminal?  
-A: Yes, I like the way it looks and like that it causes my prompt to start midway
-down the screen. I do acknowledge that the information it presents is not actually useful.
-
-
-TODO
----
-* GPU not working
